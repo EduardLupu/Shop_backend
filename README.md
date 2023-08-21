@@ -1,2 +1,2 @@
 # Shop_backend
-Backend of my shop using NodeJS.
+Shop built with NodeJS.

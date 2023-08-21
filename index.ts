@@ -1,6 +1,8 @@
 import mongoose from 'mongoose'
 import express from 'express'
 import cors from 'cors'
+import productRouter from "./src/routes/productRoutes";
+import cartRouter from "./src/routes/cartRoutes";
 
 const app = express(), port = 8080
 
@@ -16,9 +18,6 @@ const connectToMongoDB = async () => {
 connectToMongoDB();
 
 app.use(cors());
-
-import productRouter from "./src/routes/productRoutes";
-import cartRouter from "./src/routes/cartRoutes";
 
 app.use('/api', productRouter);
 app.use('/api', cartRouter);

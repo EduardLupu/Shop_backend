@@ -1,6 +1,23 @@
 import {Schema, model} from "mongoose";
 
-const cartSchema = new Schema({
+export interface CartProduct {
+    id: number,
+    title: string,
+    price: number,
+    quantity: number,
+    thumbnail: string
+}
+export interface Cart {
+    id: number,
+    products: [CartProduct],
+    total: number,
+    discountedTotal: number,
+    userId: number,
+    totalProducts: number,
+    totalQuantity: number
+}
+
+const cartSchema = new Schema<Cart>({
     id: Number,
     products: [{
         id: Number,

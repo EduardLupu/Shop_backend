@@ -1,28 +1,24 @@
-import mongoose from 'mongoose'
 import express from 'express'
 import cors from 'cors'
 import productRouter from "./src/routes/productRoutes";
 import cartRouter from "./src/routes/cartRoutes";
+import {connectToMongoDB} from "./src/utils/dbutils";
 
-const app = express(), port = 8080
+connectToMongoDB().then(() => console.log('Connected to MongoDB'));
 
-const connectToMongoDB = async () => {
-    try {
-        await mongoose.connect('mongodb://127.0.0.1:27017/shopdb');
-        console.log('Connected to MongoDB');
-    } catch (error) {
-        console.log(error)
-    }
-}
+const app = express(), port = 8080;
 
-connectToMongoDB();
+app.use(
+    cors({
+        origin: ["http://localhost:4000"],
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        credentials: true,
+    })
+);
 
-app.use(cors());
-
-app.use('/api', productRouter);
-app.use('/api', cartRouter);
-
-
+app.use(express.json());
+app.use('/api/products', productRouter);
+app.use('/api/cart', cartRouter);
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}, CORS-enabled web server`);

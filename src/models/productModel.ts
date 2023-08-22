@@ -9,23 +9,52 @@ export interface Product {
     category: string,
     rating: number,
     discountPercentage: number,
-    thumbnail: string,
     brand: string,
     stock: number
 }
 
 const productSchema = new Schema<Product>({
-    id: Number,
-    title: String,
-    description: String,
-    price: Number,
-    images: [String],
-    category: String,
-    rating: Number,
-    discountPercentage: Number,
-    thumbnail: String,
-    brand: String,
-    stock: Number,
+    id: {
+        type: Number,
+        required: true,
+        unique: true,
+    },
+    title: {
+        type: String,
+        required: true,
+    },
+    description: {
+        type: String,
+        required: true,
+    },
+    price: {
+        type: Number,
+        required: true,
+    },
+    images: [{
+        type: String,
+        required: true,
+    }],
+    category: {
+        type: String,
+        required: true,
+    },
+    rating: {
+        type: Number,
+        required: true,
+    },
+    discountPercentage: {
+        type: Number,
+        required: true,
+    },
+    brand: {
+        type: String,
+        required: true,
+    },
+    stock: {
+        type: Number,
+        required: true,
+    },
 });
 
 const ProductModel = model('product', productSchema);

@@ -5,11 +5,11 @@ export interface CartProduct {
     title: string,
     price: number,
     quantity: number,
-    thumbnail: string
+    image: string
 }
 export interface Cart {
     id: number,
-    products: [CartProduct],
+    products: CartProduct[],
     total: number,
     discountedTotal: number,
     userId: number,
@@ -18,19 +18,54 @@ export interface Cart {
 }
 
 const cartSchema = new Schema<Cart>({
-    id: Number,
+    id: {
+        type: Number,
+        required: true,
+        unique: true,
+    },
     products: [{
-        id: Number,
-        title: String,
-        price: Number,
-        quantity: Number,
-        thumbnail: String,
+        id: {
+            type: Number,
+            required: true,
+            unique: true,
+        },
+        title: {
+            type: String,
+            required: true,
+        },
+        price: {
+            type: Number,
+            required: true,
+        },
+        quantity: {
+            type: Number,
+            required: true,
+        },
+        image: {
+            type: String,
+            required: false,
+        },
     }],
-    total: Number,
-    discountedTotal: Number,
-    userId: Number,
-    totalProducts: Number,
-    totalQuantity: Number
+    total: {
+        type: Number,
+        required: true,
+    },
+    discountedTotal: {
+        type: Number,
+        required: true,
+    },
+    userId: {
+        type: Number,
+        required: true,
+    },
+    totalProducts: {
+        type: Number,
+        required: true,
+    },
+    totalQuantity: {
+        type: Number,
+        required: true,
+    }
 });
 
 const CartModel = model('cart', cartSchema);

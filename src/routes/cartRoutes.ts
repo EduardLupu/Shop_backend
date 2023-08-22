@@ -1,12 +1,10 @@
 import express from "express";
-import {addProductToCart, deleteProductFromCart, getCart} from "../controllers/cartController";
-import bodyParser from "body-parser";
-const jsonParser = bodyParser.json();
+import {createCart, deleteProductFromCart, getCart, updateProductInCart} from "../controllers/cartController";
 
 const cartRouter = express.Router();
 
-cartRouter.get('/carts/:id', getCart);
-
-cartRouter.post('/carts/:id', jsonParser, addProductToCart);
-cartRouter.delete('/carts/:id', jsonParser, deleteProductFromCart);
+cartRouter.get('/:id', getCart);
+cartRouter.post('', createCart);
+cartRouter.post('/:id', updateProductInCart);
+cartRouter.delete('/:id', deleteProductFromCart);
 export default cartRouter;

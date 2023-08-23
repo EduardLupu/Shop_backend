@@ -6,6 +6,7 @@ import {connectToMongoDB} from "./src/utils/dbutils";
 import userRouter from "./src/routes/userRoutes";
 import dotenv from 'dotenv'
 import cookieParser from "cookie-parser";
+import orderRouter from "./src/routes/orderRoutes";
 
 dotenv.config();
 connectToMongoDB().then(() => console.log('Connected to MongoDB'));
@@ -24,6 +25,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use('/api/products', productRouter);
 app.use('/api/cart', cartRouter);
+app.use('/api/orders', orderRouter);
 app.use('/api', userRouter);
 
 app.listen(port, () => {

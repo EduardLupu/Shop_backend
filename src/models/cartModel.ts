@@ -8,18 +8,16 @@ export interface CartProduct {
     image: string
 }
 export interface Cart {
-    id: number,
+    userId: string
     products: CartProduct[],
     total: number,
-    discountedTotal: number,
-    userId: number,
     totalProducts: number,
     totalQuantity: number
 }
 
 const cartSchema = new Schema<Cart>({
-    id: {
-        type: Number,
+    userId: {
+        type: String,
         required: true,
         unique: true,
     },
@@ -47,14 +45,6 @@ const cartSchema = new Schema<Cart>({
         },
     }],
     total: {
-        type: Number,
-        required: true,
-    },
-    discountedTotal: {
-        type: Number,
-        required: true,
-    },
-    userId: {
         type: Number,
         required: true,
     },

@@ -6,8 +6,7 @@ export const getProduct = async (req: Request, res: Response) => {
     try {
         const projection = getProjectionFields(req.query.select as string | undefined);
         const product: Product | null = await ProductModel.findOne({id: req.params.id}, projection);
-        if (product === null)
-        {
+        if (product === null) {
             res.status(404).json({message: `Product with id ${req.params.id} was not found`});
             return;
         }
@@ -20,8 +19,8 @@ export const getProduct = async (req: Request, res: Response) => {
 }
 export const getProducts = async (req: Request, res: Response) => {
     try {
-        const limit = !req.query.limit ? 6: +req.query.limit;
-        const skip = !req.query.skip ? 0: +req.query.skip;
+        const limit = !req.query.limit ? 6 : +req.query.limit;
+        const skip = !req.query.skip ? 0 : +req.query.skip;
         const projection = getProjectionFields(req.query.select as string | undefined);
         const products: Product[] = await ProductModel.find({}, projection, {limit, skip});
         res.status(200).json(products);
@@ -33,12 +32,11 @@ export const getProducts = async (req: Request, res: Response) => {
 
 export const getProductsByCategory = async (req: Request, res: Response) => {
     try {
-        const category = req.params.category;
-        const projection = getProjectionFields(req.query.select as string | undefined);
-        const products: Product[] = await ProductModel.find({category}, projection);
+        const category = req.params.category,
+            projection = getProjectionFields(req.query.select as string | undefined),
+            products: Product[] = await ProductModel.find({category}, projection);
         res.status(200).json(products);
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error);
         res.status(500).json({message: `Server Error: ${error}`});
     }
@@ -48,7 +46,6 @@ export const getProductsBySearch = async (req: Request, res: Response) => {
     try {
         const search = req.params.search;
         const projection = getProjectionFields(req.query.select as string | undefined);
-
         const products: Product[] = await ProductModel.find(
             {
                 $or: [
@@ -60,8 +57,7 @@ export const getProductsBySearch = async (req: Request, res: Response) => {
             },
             projection);
         res.status(200).json(products);
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error);
         res.status(500).json({message: `Server Error: ${error}`});
     }

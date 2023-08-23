@@ -1,10 +1,13 @@
 import express from "express";
-import {createCart, deleteProductFromCart, getCart, updateProductInCart} from "../controllers/cartController";
+import {
+    addProductInCart,
+    deleteProductFromCart,
+    getCart,
+} from "../controllers/cartController";
 
 const cartRouter = express.Router();
 
-cartRouter.get('/:id', getCart);
-cartRouter.post('', createCart);
-cartRouter.post('/:id', updateProductInCart);
+cartRouter.get('', getCart);
+cartRouter.post('/:id', addProductInCart);
 cartRouter.delete('/:id', deleteProductFromCart);
 export default cartRouter;

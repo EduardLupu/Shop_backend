@@ -26,16 +26,14 @@ export const registerUser = async (req: Request, res: Response) => {
             birthDate: birthDate,
             password: password,
         }
-        const user = await UserModel.create(newUser);
-        const token = createSecretToken(user._id.toString(), user.email);
 
-        res.cookie("token", token, {
-            httpOnly: false,
-        });
+        const user = await UserModel.create(newUser);
+        console.log(user);
+        const token = createSecretToken(user._id.toString(), user.email);
 
         await createCart(user._id.toString());
 
-        res.status(201).json({message: "User created successfully"});
+        res.status(201).json({token: token});
     } catch (error) {
         console.log(error);
         res.status(500).json({message: `Server Error: ${error}`});
@@ -46,32 +44,40 @@ export const loginUser = async (req: Request, res: Response) => {
     try {
         const {email, password} = req.body;
         if (!email || !password) {
-            return res.json({message: 'All fields are required'})
+            return res.status(404).json({message: 'All fields are required'})
         }
         const user = await UserModel.findOne({email});
         if (!user) {
-            return res.json({message: 'E-mail is not registered'})
+            return res.status(404).json({message: 'E-mail is not registered'})
         }
         const auth = await bcrypt.compare(password, user.password);
         if (!auth) {
-            return res.json({message: 'Incorrect password!'})
+            return res.status(404).json({message: 'Incorrect password!'})
         }
+
+        user.lastTimeOnline = new Date();
+        await user.save();
+
         const token = createSecretToken(user._id.toString(), user.email);
-        res.cookie("token", token, {
-            httpOnly: false,
-        });
-        res.status(201).json({ message: "User logged in successfully", success: true });
+        res.status(200).json({token: token});
+
     } catch (error) {
         console.log(error);
         res.status(500).json({message: `Server Error: ${error}`});
     }
 }
-export const logoutUser = (req: Request, res: Response) => {
+export const logoutUser = async (req: Request, res: Response) => {
     try {
-        res.clearCookie("token");
+        const user = await getUser(req, res);
+        if (!user) {
+            return;
+        }
+
+        user.lastTimeOnline = new Date();
+        await user.save();
+
         res.status(200).json({message: "User logged out successfully"});
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error);
         res.status(500).json({message: `Server Error: ${error}`});
     }

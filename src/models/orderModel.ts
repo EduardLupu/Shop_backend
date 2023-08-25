@@ -17,7 +17,6 @@ const orderSchema = new Schema<Order>({
         id: {
             type: Number,
             required: true,
-            unique: true,
         },
         title: {
             type: String,

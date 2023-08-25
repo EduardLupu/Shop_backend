@@ -7,6 +7,7 @@ export interface CartProduct {
     quantity: number,
     image: string
 }
+
 export interface Cart {
     userId: string
     products: CartProduct[],
@@ -25,7 +26,6 @@ const cartSchema = new Schema<Cart>({
         id: {
             type: Number,
             required: true,
-            unique: true,
         },
         title: {
             type: String,
@@ -43,7 +43,8 @@ const cartSchema = new Schema<Cart>({
             type: String,
             required: false,
         },
-    }],
+    }
+    ],
     total: {
         type: Number,
         required: true,

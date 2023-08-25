@@ -3,6 +3,7 @@ import {getUser} from "./userController";
 import {Request, Response} from "express";
 import CartModel from "../models/cartModel";
 import {createCart} from "./cartController";
+
 export const getOrders = async (req: Request, res: Response) => {
     try {
         const user = await getUser(req, res);
@@ -27,8 +28,7 @@ export const createOrder = async (req: Request, res: Response) => {
         if (!cart) {
             return;
         }
-        if (cart.products.length === 0)
-        {
+        if (cart.products.length === 0) {
             res.status(400).json({message: `Cart is empty`});
             return;
         }
@@ -52,8 +52,30 @@ export const createOrder = async (req: Request, res: Response) => {
         await CartModel.deleteOne({userId: user._id});
         const newCart = await createCart(user._id.toString());
         res.status(200).json(newCart);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: `Server Error: ${error}`});
     }
-    catch (error) {
+}
+
+export const deleteOrder = async (req: Request, res: Response) => {
+    try {
+        const user = await getUser(req, res);
+        if (!user) {
+            return;
+        }
+        const deletedOrderInfo = await OrderModel.deleteOne({
+            userId: user._id,
+            _id: req.params.id,
+            orderStatus: 'pending'
+        });
+        if (deletedOrderInfo.deletedCount === 0) {
+            res.status(404).json({message: `Order with id ${req.params.id} was not found or is not pending`});
+            return;
+        }
+        const orders = await OrderModel.find({userId: user._id});
+        res.status(200).json(orders);
+    } catch (error) {
         console.log(error);
         res.status(500).json({message: `Server Error: ${error}`});
     }

@@ -19,5 +19,11 @@ export const decodeToken = (token: string) => {
     if (!secret_token) {
         return null;
     }
-    return jsonwebtoken.verify(token, secret_token);
+    try {
+        return jsonwebtoken.verify(token, secret_token);
+    }
+    catch (error) {
+        console.log(error);
+        return null;
+    }
 }

@@ -14,6 +14,7 @@ export interface User {
     image?: string,
     password: string,
     createdAt?: Date,
+    lastTimeOnline?: Date,
 }
 
 const userSchema = new Schema<User>({
@@ -47,7 +48,12 @@ const userSchema = new Schema<User>({
         type: Date,
         default: new Date(),
         required: false
-    }
+    },
+    lastTimeOnline: {
+        type: Date,
+        default: new Date(),
+        required: false
+    },
 });
 
 userSchema.pre('save', async function () {

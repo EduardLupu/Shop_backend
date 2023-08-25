@@ -17,7 +17,6 @@ const productSchema = new Schema<Product>({
     id: {
         type: Number,
         required: true,
-        unique: true,
     },
     title: {
         type: String,

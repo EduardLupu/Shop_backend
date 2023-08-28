@@ -4,6 +4,12 @@ import {Request, Response} from "express";
 import CartModel from "../models/cartModel";
 import {createCart} from "./cartController";
 
+/**
+ * Get the orders for the current loggedIn user
+ * If the user is not logged in, it will return a 401 status code
+ * @param req
+ * @param res
+ */
 export const getOrders = async (req: Request, res: Response) => {
     try {
         const user = await getUser(req, res);
@@ -17,7 +23,11 @@ export const getOrders = async (req: Request, res: Response) => {
         res.status(500).json({message: `Server Error: ${error}`});
     }
 }
-
+/**
+ * Create an order for the current loggedIn user
+ * @param req
+ * @param res
+ */
 export const createOrder = async (req: Request, res: Response) => {
     try {
         const user = await getUser(req, res);
@@ -57,6 +67,13 @@ export const createOrder = async (req: Request, res: Response) => {
         res.status(500).json({message: `Server Error: ${error}`});
     }
 }
+
+/**
+ * Delete a pending order with the given id in request params for the current loggedIn user
+ * If the order is not found or is not pending, it will return a 404 status code
+ * @param req
+ * @param res
+ */
 
 export const deleteOrder = async (req: Request, res: Response) => {
     try {

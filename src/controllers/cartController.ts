@@ -2,6 +2,14 @@ import CartModel, {Cart, CartProduct} from "../models/cartModel";
 import ProductModel, {Product} from "../models/productModel";
 import {getUser} from "./userController";
 import {Request, Response} from "express";
+
+/**
+ * Get the cart for the current loggedIn user; if the user doesn't have a cart, it doesn't create one
+ * If the user is not logged in, it will return a 401 status code
+ *
+ * @param req
+ * @param res
+ */
 export const getCart = async (req: Request, res: Response) => {
     try {
         const user = await getUser(req, res);
@@ -22,6 +30,10 @@ export const getCart = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Create a cart for a user with the given userId (shouldn't be called directly)
+ * @param userId
+ */
 export const createCart = async (userId: string) => {
     const newCart: Cart = {
         products: [],
@@ -33,6 +45,13 @@ export const createCart = async (userId: string) => {
     await CartModel.create(newCart);
     return newCart;
 }
+
+/**
+ * Add a product with the given id in request params to the cart of the current loggedIn user
+ * If the products exists, it increases its quantity by 1, otherwise it adds it to the cart with quantity 1
+ * @param req
+ * @param res
+ */
 export const addProductInCart = async (req: Request, res: Response) => {
     try {
 
@@ -97,7 +116,13 @@ export const addProductInCart = async (req: Request, res: Response) => {
     }
 }
 
-
+/**
+ * Delete/remove a product with the given id in request params from the cart of the current loggedIn user
+ * If the product exists, it decreases its quantity by 1, otherwise it returns a 404 status code
+ * If the product quantity is 0, it deletes it from the cart
+ * @param req
+ * @param res
+ */
 export const deleteProductFromCart = async (req: Request, res: Response) => {
     try {
         const user = await getUser(req, res);
@@ -149,6 +174,13 @@ export const deleteProductFromCart = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Delete the cart of the current loggedIn user
+ * If the user doesn't have a cart, it returns a 404 status code
+ * If the user has a cart, it deletes it and creates a new one
+ * @param req
+ * @param res
+ */
 export const deleteCart = async (req: Request, res: Response) => {
     try {
         const user = await getUser(req, res);
@@ -169,6 +201,13 @@ export const deleteCart = async (req: Request, res: Response) => {
         res.status(500).json({message: `Server Error: ${error}`});
     }
 }
+
+/**
+ * Delete a product, no matter the quantity, with the given id in request params from the cart of the current loggedIn user
+ *
+ * @param req
+ * @param res
+ */
 export const destroyProductFromCart = async (req: Request, res: Response) => {
     try {
         const user = await getUser(req, res);

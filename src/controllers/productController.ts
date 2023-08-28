@@ -2,6 +2,13 @@ import ProductModel, {Product} from "../models/productModel";
 import {getProjectionFields} from "../utils/getProjectionFields";
 import {Request, Response} from "express";
 
+/**
+ * Get the product with the given id in request params
+ * The user doesn't have to be logged in
+ * projection can be used to select which fields to return, if needed
+ * @param req
+ * @param res
+ */
 export const getProduct = async (req: Request, res: Response) => {
     try {
         const projection = getProjectionFields(req.query.select as string | undefined);
@@ -17,6 +24,14 @@ export const getProduct = async (req: Request, res: Response) => {
         res.status(500).json({message: `Server Error: ${error}`});
     }
 }
+
+/**
+ * Get products with pagination based on the given limit and skip query params
+ * The user doesn't have to be logged in
+ * projection can be used to select which fields to return, if needed
+ * @param req
+ * @param res
+ */
 export const getProducts = async (req: Request, res: Response) => {
     try {
         const limit = !req.query.limit ? 6 : +req.query.limit;
@@ -30,6 +45,11 @@ export const getProducts = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Get all products with the given category in the request params
+ * @param req
+ * @param res
+ */
 export const getProductsByCategory = async (req: Request, res: Response) => {
     try {
         const category = req.params.category,
@@ -42,6 +62,12 @@ export const getProductsByCategory = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Get all products with the given search in the request params in the title, description, category or brand
+ *
+ * @param req
+ * @param res
+ */
 export const getProductsBySearch = async (req: Request, res: Response) => {
     try {
         const search = req.params.search;

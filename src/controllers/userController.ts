@@ -3,6 +3,15 @@ import {Request, Response} from "express";
 import {createSecretToken, decodeToken} from "../utils/authmiddleware";
 import bcrypt from "bcrypt";
 import {createCart} from "./cartController";
+
+/**
+ * Register a new user, if the email is not already registered
+ * After registering, it creates a cart for the user
+ * It returns the auth token for the user if the registration is successful
+ *
+ * @param req
+ * @param res
+ */
 export const registerUser = async (req: Request, res: Response) => {
     try {
         const {firstName, lastName, email, birthDate, password} = req.body;
@@ -28,7 +37,6 @@ export const registerUser = async (req: Request, res: Response) => {
         }
 
         const user = await UserModel.create(newUser);
-        console.log(user);
         const token = createSecretToken(user._id.toString(), user.email);
 
         await createCart(user._id.toString());
@@ -40,6 +48,13 @@ export const registerUser = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Login a user with the given email and password
+ * It returns the auth token for the user if the login is successful
+ *
+ * @param req
+ * @param res
+ */
 export const loginUser = async (req: Request, res: Response) => {
     try {
         const {email, password} = req.body;
@@ -66,6 +81,15 @@ export const loginUser = async (req: Request, res: Response) => {
         res.status(500).json({message: `Server Error: ${error}`});
     }
 }
+
+/**
+ * It log outs the current loggedIn user
+ * It updates the lastTimeOnline field for the user
+ * It returns a 200 status code if the logout is successful
+ *
+ * @param req
+ * @param res
+ */
 export const logoutUser = async (req: Request, res: Response) => {
     try {
         const user = await getUser(req, res);
@@ -83,6 +107,12 @@ export const logoutUser = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Get the profile of the current loggedIn user
+ * It returns a 200 status code and the user profile if the user is logged in
+ * @param req
+ * @param res
+ */
 export const userProfile = async (req: Request, res: Response) => {
     try {
         const user = await getUser(req, res);
@@ -97,6 +127,13 @@ export const userProfile = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Get the user by the decoded token form the request header
+ * This function is used as a middleware for every function that needs authorization
+ * It returns the user if the token is valid and the user exists
+ * @param req
+ * @param res
+ */
 export const getUser = async (req: Request, res: Response) => {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
@@ -120,6 +157,12 @@ export const getUser = async (req: Request, res: Response) => {
     }
     return user;
 }
+
+/**
+ * Check if the user is logged in based on the given token
+ * Return true if the user is logged in, false otherwise
+ * @param token
+ */
 export const isUserLoggedIn = async (token: string) => {
     const data = decodeToken(token) as Data;
     if (!data) {
@@ -128,6 +171,12 @@ export const isUserLoggedIn = async (token: string) => {
     const user = await UserModel.findById(data.user_id);
     return (user !== null);
 }
+
+/**
+ * Update the profile of the current loggedIn user with the given fields from the request body
+ * @param req
+ * @param res
+ */
 export const updateUserProfile = async (req: Request, res: Response) => {
     try {
         const user = await getUser(req, res);

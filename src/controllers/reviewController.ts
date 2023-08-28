@@ -53,3 +53,35 @@ export const getReviewsForProduct = async (req: Request, res: Response) => {
         res.status(500).json({message: `Server Error: ${error}`});
     }
 }
+
+/**
+ * Deletes a review
+ * @param req
+ * @param res
+ */
+export const deleteReview = async (req: Request, res: Response) => {
+    try {
+        const user = await getUser(req, res);
+        if (!user) {
+            return;
+        }
+        const deleteReviewInfo = await ReviewModel.deleteOne({
+            _id: req.params.id
+        })
+        if (deleteReviewInfo.deletedCount === 0) {
+            res.status(404).json({message: `Review with id ${req.params.id} was not found`});
+            return;
+        }
+        const projection = getProjectionFields(req.query.select as string | undefined),
+            reviews: Review[] | null = await ReviewModel.find({productId: req.params.id}, projection);
+        if (reviews === null)
+        {
+            res.status(200).json({message: `Product with id ${req.params.id} doesn't have any other reviews`});
+            return;
+        }
+        res.status(200).json(reviews);
+    } catch (error){
+        console.log(error);
+        res.status(500).json({message: `Server Error: ${error}`});
+    }
+}

@@ -16,14 +16,14 @@ export const createReview = async (req: Request, res: Response) => {
         }
         const newReview = {
             userId: user._id,
-            productId: req.body.productId,
-            title: req.body.reviewTitle,
-            description: req.body.reviewDescription,
-            stars: req.body.reviewStars
+            productId: req.params.id,
+            title: req.body.title,
+            description: req.body.description,
+            stars: req.body.stars
         }
         await ReviewModel.create(newReview);
         res.status(200).json(newReview);
-    } catch (error){
+    } catch (error) {
         console.log(error);
         res.status(500).json({message: `Server Error: ${error}`});
     }
@@ -36,19 +36,14 @@ export const createReview = async (req: Request, res: Response) => {
  */
 export const getReviewsForProduct = async (req: Request, res: Response) => {
     try {
-        const user = await getUser(req, res);
-        if (!user) {
-            return;
-        }
         const projection = getProjectionFields(req.query.select as string | undefined),
             reviews: Review[] | null = await ReviewModel.find({productId: req.params.id}, projection);
-        if (reviews === null)
-        {
+        if (reviews === null) {
             res.status(404).json({message: `Product with id ${req.params.id} doesn't have reviews`});
             return;
         }
         res.status(200).json(reviews);
-    } catch (error){
+    } catch (error) {
         console.log(error);
         res.status(500).json({message: `Server Error: ${error}`});
     }
@@ -65,22 +60,25 @@ export const deleteReview = async (req: Request, res: Response) => {
         if (!user) {
             return;
         }
-        const deleteReviewInfo = await ReviewModel.deleteOne({
-            _id: req.params.id
-        })
-        if (deleteReviewInfo.deletedCount === 0) {
-            res.status(404).json({message: `Review with id ${req.params.id} was not found`});
+        const review = await ReviewModel.findOne({
+            _id: req.params.id,
+            userId: user._id
+        });
+        if (!review) {
+            res.status(404).json({message: `Review with id ${req.params.id} was not found or you are not the owner`});
             return;
         }
+        const deleteReviewProductId = review.productId;
+        await ReviewModel.deleteOne({_id: req.params.id, userId: user._id});
+
         const projection = getProjectionFields(req.query.select as string | undefined),
-            reviews: Review[] | null = await ReviewModel.find({productId: req.params.id}, projection);
-        if (reviews === null)
-        {
+            reviews: Review[] | null = await ReviewModel.find({productId: deleteReviewProductId}, projection);
+        if (reviews === null) {
             res.status(200).json({message: `Product with id ${req.params.id} doesn't have any other reviews`});
             return;
         }
         res.status(200).json(reviews);
-    } catch (error){
+    } catch (error) {
         console.log(error);
         res.status(500).json({message: `Server Error: ${error}`});
     }

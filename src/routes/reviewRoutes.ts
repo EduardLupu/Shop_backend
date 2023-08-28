@@ -3,7 +3,7 @@ import {createReview, deleteReview, getReviewsForProduct} from "../controllers/r
 
 const reviewRouter = express.Router();
 
-reviewRouter.post('', createReview);
+reviewRouter.post('/:id', createReview);
 reviewRouter.get('/:id', getReviewsForProduct);
 reviewRouter.delete('/:id', deleteReview);
 

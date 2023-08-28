@@ -88,3 +88,13 @@ export const getProductsBySearch = async (req: Request, res: Response) => {
         res.status(500).json({message: `Server Error: ${error}`});
     }
 }
+
+export const getCategories = async (req: Request, res: Response) => {
+    try {
+        const categories: string[] = await ProductModel.distinct('category');
+        res.status(200).json(categories);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: `Server Error: ${error}`});
+    }
+}

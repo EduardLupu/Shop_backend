@@ -27,7 +27,9 @@ const reviewSchema = new Schema<Review>({
     },
     stars: {
         type: Number,
-        required: true
+        required: true,
+        min: 1,
+        max: 5,
     }
 })
 

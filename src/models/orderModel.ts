@@ -11,7 +11,6 @@ const orderSchema = new Schema<Order>({
     userId: {
         type: String,
         required: true,
-        unique: true,
     },
     products: [{
         id: {

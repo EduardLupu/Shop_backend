@@ -4,6 +4,7 @@ export interface Review {
     productId: number,
     userId: string,
     title: string,
+    name: string,
     description: string,
     stars: number,
 }
@@ -18,6 +19,10 @@ const reviewSchema = new Schema<Review>({
         required: true,
     },
     title: {
+        type: String,
+        required: true,
+    },
+    name: {
         type: String,
         required: true,
     },

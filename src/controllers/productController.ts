@@ -91,8 +91,9 @@ export const getProductsBySearch = async (req: Request, res: Response) => {
 
 export const getCategories = async (req: Request, res: Response) => {
     try {
-        const categories: string[] = await ProductModel.distinct('category');
-        res.status(200).json(categories);
+        const categories: string[] = await ProductModel.distinct('category'),
+            allCategories: string[] = ['All products', ...categories];
+        res.status(200).json(allCategories);
     } catch (error) {
         console.log(error);
         res.status(500).json({message: `Server Error: ${error}`});

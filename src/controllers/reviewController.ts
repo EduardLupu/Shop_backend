@@ -18,6 +18,7 @@ export const createReview = async (req: Request, res: Response) => {
             userId: user._id,
             productId: req.params.id,
             title: req.body.title,
+            name: user.firstName + ' ' + user.lastName,
             description: req.body.description,
             stars: req.body.stars
         }

@@ -8,6 +8,7 @@ import dotenv from 'dotenv'
 import orderRouter from "./src/routes/orderRoutes";
 import reviewRoutes from "./src/routes/reviewRoutes";
 import {getCategories} from "./src/controllers/productController";
+import returnRoutes from "./src/routes/returnRoutes";
 
 dotenv.config();
 connectToMongoDB().then(() => console.log('Connected to MongoDB'));
@@ -25,6 +26,7 @@ app.use('/api/cart', cartRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/categories',  getCategories);
+app.use('/api/return', returnRoutes);
 app.use('/api', userRouter);
 
 app.listen(port, () => {

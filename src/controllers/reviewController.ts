@@ -37,7 +37,7 @@ export const createReview = async (req: Request, res: Response) => {
  */
 export const getReviewsForProduct = async (req: Request, res: Response) => {
     try {
-        const projection = getProjectionFields(req.query.select as string | undefined),
+        const projection = getProjectionFields(req.query.select as string | undefined, true),
             reviews: Review[] | null = await ReviewModel.find({productId: req.params.id}, projection);
         if (reviews === null) {
             res.status(404).json({message: `Product with id ${req.params.id} doesn't have reviews`});
@@ -69,16 +69,8 @@ export const deleteReview = async (req: Request, res: Response) => {
             res.status(404).json({message: `Review with id ${req.params.id} was not found or you are not the owner`});
             return;
         }
-        const deleteReviewProductId = review.productId;
         await ReviewModel.deleteOne({_id: req.params.id, userId: user._id});
-
-        const projection = getProjectionFields(req.query.select as string | undefined),
-            reviews: Review[] | null = await ReviewModel.find({productId: deleteReviewProductId}, projection);
-        if (reviews === null) {
-            res.status(200).json({message: `Product with id ${req.params.id} doesn't have any other reviews`});
-            return;
-        }
-        res.status(200).json(reviews);
+        res.status(200).json({message: `Review with id ${req.params.id} was deleted`});
     } catch (error) {
         console.log(error);
         res.status(500).json({message: `Server Error: ${error}`});

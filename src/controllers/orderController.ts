@@ -97,3 +97,28 @@ export const deleteOrder = async (req: Request, res: Response) => {
         res.status(500).json({message: `Server Error: ${error}`});
     }
 }
+
+export const deliverOrder = async (req: Request, res: Response) => {
+    try {
+        const user = await getUser(req, res);
+        if (!user) {
+            return;
+        }
+        const order = await OrderModel.findOne({
+            userId: user._id,
+            _id: req.params.id,
+            orderStatus: 'pending'
+        });
+        if (!order) {
+            res.status(404).json({message: `Order with id ${req.params.id} was not found or is not pending`});
+            return;
+        }
+        order.orderStatus = 'delivered';
+        await order.save();
+        res.status(200).json({message: `Order with id ${req.params.id} was delivered`});
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({message: `Server Error: ${error}`});
+    }
+}

@@ -9,6 +9,7 @@ import orderRouter from "./src/routes/orderRoutes";
 import reviewRoutes from "./src/routes/reviewRoutes";
 import {getCategories} from "./src/controllers/productController";
 import returnRoutes from "./src/routes/returnRoutes";
+import {Request, Response} from "express";
 
 dotenv.config();
 connectToMongoDB().then(() => console.log('Connected to MongoDB'));
@@ -28,6 +29,9 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/categories',  getCategories);
 app.use('/api/return', returnRoutes);
 app.use('/api', userRouter);
+app.all('*', (req: Request, res: Response) => {
+    res.status(404).json({message: `Route ${req.originalUrl} not found`});
+});
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}, CORS-enabled web server`);

@@ -1,5 +1,6 @@
 import {Schema, model} from "mongoose";
 import bcrypt from "bcrypt";
+import validator from "validator";
 
 export interface Data {
     user_id: string,
@@ -30,6 +31,8 @@ const userSchema = new Schema<User>({
         type: String,
         required: true,
         unique: true,
+        lowercase: true,
+        validate: [validator.isEmail, 'Please provide a valid email']
     },
     birthDate: {
         type: Date,

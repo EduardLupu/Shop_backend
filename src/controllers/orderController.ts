@@ -60,8 +60,8 @@ export const createOrder = async (req: Request, res: Response) => {
 
         await OrderModel.create(newOrder);
         await CartModel.deleteOne({userId: user._id});
-        const newCart = await createCart(user._id.toString());
-        res.status(200).json(newCart);
+        await createCart(user._id.toString());
+        res.status(200).json("Order created successfully");
     } catch (error) {
         console.log(error);
         res.status(500).json({message: `Server Error: ${error}`});

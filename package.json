@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.ts",
   "author": "Eduard Adrian Lupu",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "start": "tsx watch index.ts"
   },

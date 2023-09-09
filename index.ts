@@ -14,10 +14,10 @@ import {Request, Response} from "express";
 dotenv.config();
 connectToMongoDB().then(() => console.log('Connected to MongoDB'));
 
-const app = express(), port = 8080;
+const app = express(), port = 3000;
 
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: "https://eduardlupu.github.io",
     credentials: true,
 }));
 

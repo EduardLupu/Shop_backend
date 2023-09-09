@@ -10,7 +10,10 @@ import reviewRoutes from "./src/routes/reviewRoutes";
 import {getCategories} from "./src/controllers/productController";
 import returnRoutes from "./src/routes/returnRoutes";
 import {Request, Response} from "express";
-
+import rateLimiter from "./src/middleware/rateLimiter";
+import helmet from "helmet";
+import mongoSanitize from "express-mongo-sanitize";
+import hpp from "hpp";
 dotenv.config();
 connectToMongoDB().then(() => console.log('Connected to MongoDB'));
 
@@ -21,7 +24,20 @@ app.use(cors({
     credentials: true,
 }));
 
-app.use(express.json());
+app.use('/api', rateLimiter);
+
+app.use(helmet());
+
+app.use(express.json(
+    {
+        limit: '15kb'
+    }
+));
+
+app.use(mongoSanitize());
+
+app.use(hpp());
+
 app.use('/api/products', productRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/orders', orderRouter);
@@ -29,6 +45,7 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/categories',  getCategories);
 app.use('/api/return', returnRoutes);
 app.use('/api', userRouter);
+
 app.all('*', (req: Request, res: Response) => {
     res.status(404).json({message: `Route ${req.originalUrl} not found`});
 });
